@@ -27,21 +27,33 @@ async function run() {
     await client.connect();
     const gamesCollection = client.db("funfinityDB").collection("games");
 
-    // to get the data from the db
+    //------------------------ to get the data from the db ---------------------------------------------
+
     app.get("/games", async (req, res) => {
       const cursor = gamesCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
 
-    // get data catagory wise
-    app.get("/games/:catagory", async (req, res) => {
-      const cata = req.params.catagory;
-      console.log("cata", cata);
-      const query = {subCategory: cata};
+    // ------------------------------------------get data catagory wise---------------------------------------
+    app.get("/games/:category", async (req, res) => {
+      const cate = req.params.category;
+      // console.log("cata", cate);
+      const query = {subCategory: cate};
+      const options = {
+        projection: {Name: 1, Price: 1, Rating: 1, picture: 1},
+      };
+      const result = await gamesCollection.find(query, options).toArray();
+      // console.log("result:", result);
+      res.send(result);
+    });
+    // ------------------------------------------view details id wise-------------------------------------------------------
 
-      const result = await gamesCollection.find(query).toArray();
-      console.log("result:", result);
+    app.get("/game/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await gamesCollection.findOne(query);
+
       res.send(result);
     });
 
