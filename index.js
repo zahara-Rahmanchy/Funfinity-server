@@ -36,7 +36,7 @@ async function run() {
     });
 
     // ------------------------------------------get data catagory wise---------------------------------------
-    app.get("/games/:category", async (req, res) => {
+    app.get("/game/:category", async (req, res) => {
       const cate = req.params.category;
       // console.log("cata", cate);
       const query = {subCategory: cate};
@@ -49,12 +49,19 @@ async function run() {
     });
     // ------------------------------------------view details id wise-------------------------------------------------------
 
-    app.get("/game/:id", async (req, res) => {
+    app.get("/games/:id", async (req, res) => {
       const id = req.params.id;
       const query = {_id: new ObjectId(id)};
       const result = await gamesCollection.findOne(query);
 
       res.send(result);
+    });
+
+    // ----------------------------post for adding toy to the db--------------------------------------------
+
+    app.post("/games", async (req, res) => {
+      const toy = await gamesCollection.insertOne(req.body);
+      res.send(toy);
     });
 
     // Send a ping to confirm a successful connection
