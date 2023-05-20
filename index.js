@@ -24,19 +24,25 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // client.connect();
     const gamesCollection = client.db("funfinityDB").collection("games");
 
     //------------------------ to get the data from the db ---------------------------------------------
 
-    app.get("/games", async (req, res) => {
-      const cursor = gamesCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
+    app.get("/toys", async (req, res) => {
+      const type = req.query.type === "ascen";
+      const value = req.query.value;
+      console.log("q", req.query.value, req.query.type);
+      const sortOb = {};
+      sortOb[value] = type ? 1 : -1;
+
+      const cursor = await gamesCollection.find({}).sort(sortOb).toArray();
+      // const result = await cursor;
+      res.send(cursor);
     });
 
     // ------------------------------------------get data catagory wise---------------------------------------
-    app.get("/game/:category", async (req, res) => {
+    app.get("/toys/:category", async (req, res) => {
       const cate = req.params.category;
       // console.log("cata", cate);
       const query = {subCategory: cate};
@@ -49,7 +55,7 @@ async function run() {
     });
     // ------------------------------------------view details id wise-------------------------------------------------------
 
-    app.get("/games/:id", async (req, res) => {
+    app.get("/toy/:id", async (req, res) => {
       const id = req.params.id;
       const query = {_id: new ObjectId(id)};
       const result = await gamesCollection.findOne(query);
@@ -59,7 +65,7 @@ async function run() {
 
     // ----------------------------post for adding toy to the db--------------------------------------------
 
-    app.post("/games", async (req, res) => {
+    app.post("/toys", async (req, res) => {
       const toy = await gamesCollection.insertOne(req.body);
       res.send(toy);
     });
