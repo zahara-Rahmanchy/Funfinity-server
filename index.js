@@ -62,6 +62,16 @@ async function run() {
 
       res.send(result);
     });
+    // -----------------get a single user toys---------------------------
+    app.get("/mytoys", async (req, res) => {
+      console.log(req.query.email);
+      let query = {};
+      if (req.query?.email) {
+        query = {sellerEmail: req.query.email};
+      }
+      const result = await gamesCollection.find(query).toArray();
+      res.send(result);
+    });
 
     // ----------------------------post for adding toy to the db--------------------------------------------
 
