@@ -80,6 +80,15 @@ async function run() {
       res.send(toy);
     });
 
+    // -------------------delete-----------------
+    app.delete("/deletetoys/:id", async (req, res) => {
+      const id = req.params.id;
+      const que = {_id: new ObjectId(id)};
+
+      const result = await gamesCollection.deleteOne(que);
+      res.send();
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ping: 1});
     console.log(
