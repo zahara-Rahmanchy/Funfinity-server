@@ -89,6 +89,23 @@ async function run() {
       res.send();
     });
 
+    app.patch("/updatetoys/:id", async (req, res) => {
+      const {Price, AvailableQuantity, Description} = req.body;
+      console.log(req.body);
+      const id = req.params.id;
+      console.log(Price, AvailableQuantity, Description);
+      const query = {_id: new ObjectId(id)};
+      const updatedDoc = {
+        $set: {
+          Price: Price,
+          AvailableQuantity: AvailableQuantity,
+          Description: Description,
+        },
+      };
+      const result = await gamesCollection.updateOne(query, updatedDoc);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ping: 1});
     console.log(
