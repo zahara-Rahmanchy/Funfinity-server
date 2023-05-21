@@ -36,7 +36,11 @@ async function run() {
       const sortOb = {};
       sortOb[value] = type ? 1 : -1;
 
-      const cursor = await gamesCollection.find({}).sort(sortOb).toArray();
+      const cursor = await gamesCollection
+        .find({})
+        .sort(sortOb)
+        .limit(20)
+        .toArray();
       // const result = await cursor;
       res.send(cursor);
     });
